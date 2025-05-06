@@ -4,29 +4,25 @@ const dotenv = require('dotenv');
 const visitRoute = require('./visitRoute');
 const cors = require('cors');
 
-dotenv.config();  // Load environment variables
+dotenv.config();
 
 const app = express();
+app.use(cors()); // enable CORS for frontend calls
 
-// Enable CORS for frontend calls
-app.use(cors());
-
-// Middleware to parse JSON requests
-app.use(express.json());  // Add this line to ensure the backend can parse JSON requests
-
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  useUnifiedTopology: true
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB error:', err));
 
-// Routes
-app.use('/api', visitRoute);
-
-// Ensure PORT from environment variable or fallback to 5000
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Root route for testing
+app.get('/', (req, res) => {
+  res.send('Welcome to the Visitor Count API!');
 });
+
+// API route for visit count
+app.use('/api/visits', visitRoute);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
