@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Visit = require('./Visit');
 
-router.get('/visits', async (req, res) => {
+// No extra "/visits" here — it's already included in server.js
+router.get('/', async (req, res) => {
   try {
     const visit = await Visit.findOneAndUpdate(
       {},
